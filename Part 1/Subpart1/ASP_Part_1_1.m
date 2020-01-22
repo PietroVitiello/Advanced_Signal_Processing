@@ -1,7 +1,7 @@
 %% Creation of signal
 clc; clear all;
 n_samples = 1000;
-which_exercise = 2; %choose 1 for uniform distribution and 2 for gaussian distribution
+which_exercise = 1; %choose 1 for uniform distribution and 2 for gaussian distribution
 x_axis = 1:n_samples;
 
 if (which_exercise == 1)
@@ -76,18 +76,17 @@ elseif (which_exercise == 2)
 end
 
 %% Part 4
-n_bins = 10;%n_samples;
+n_bins = 20;%n_samples;
 figure()
 hold on
 [counts, centers] = hist(X, n_bins);
 bar(centers, counts/n_samples)
-normpdf((-n_samples:1/n_samples:n_samples), 0, 1);
 
 if (which_exercise == 1)
-    hline = refline([0, 1/n_samples]);
+    hline = refline([0, 1/n_bins]);
     hline.Color ='r';
 elseif (which_exercise == 2)
-    plot(-5:0.1:5, normpdf(-5:0.1:5, 0, 1));
+    plot(-5:0.1:5, normpdf(-5:0.1:5, 0, 1)/n_bins);
 end
 
 
