@@ -71,12 +71,7 @@ for i = 1: M
 end
 
 %% Part 3
-N = 100; %number of discrete times
-M = 100; %number of realizations
-x_math = rp1_mathematical(M, N);
 
-figure()
-plot(1:N, ensamble_mx, x_math)
 
 
 
