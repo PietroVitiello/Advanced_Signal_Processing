@@ -9,44 +9,60 @@ v = rp3(M, N);
 %Plot a realization
 %figure(), plot(1:N, x(1,:));
 
+%% Part 1
 for i = 1: N
-    ensamble_mx(i) = mean(x(:, i));
-    ensamble_sx(i) = std(x(:, i));
+    ensemble_mx(i) = mean(x(:, i));
+    ensemble_sx(i) = std(x(:, i));
     
-    ensamble_my(i) = mean(y(:, i));
-    ensamble_sy(i) = std(y(:, i));
+    ensemble_my(i) = mean(y(:, i));
+    ensemble_sy(i) = std(y(:, i));
     
-    ensamble_mv(i) = mean(v(:, i));
-    ensamble_sv(i) = std(v(:, i));
+    ensemble_mv(i) = mean(v(:, i));
+    ensemble_sv(i) = std(v(:, i));
 end
 
-mean_estimatorx = mean(ensamble_mx);
-std_estimatorx = mean(ensamble_sx);
-mean_estimatory = mean(ensamble_my);
-std_estimatory = mean(ensamble_sy);
-mean_estimatorv = mean(ensamble_mv);
-std_estimatorv = mean(ensamble_sv);
+mean_estimatorx = mean(ensemble_mx);
+std_estimatorx = mean(ensemble_sx);
+mean_estimatory = mean(ensemble_my);
+std_estimatory = mean(ensemble_sy);
+mean_estimatorv = mean(ensemble_mv);
+std_estimatorv = mean(ensemble_sv);
 
 %Not stationary
 figure()
 subplot(2, 1, 1)
-plot(1:N, ensamble_mx)
+plot(1:N, ensemble_mx)
+title('rp1')
+xlabel('time samples')
+ylabel('Ensemble mean')
 subplot(2, 1, 2)
-plot(1:N, ensamble_sx)
+plot(1:N, ensemble_sx)
+xlabel('time samples')
+ylabel('Ensemble standard deviation')
 
 %stationary
 figure()
 subplot(2, 1, 1)
-plot(1:N, ensamble_my)
+plot(1:N, ensemble_my)
+title('rp2')
+xlabel('time samples')
+ylabel('Ensemble mean')
 subplot(2, 1, 2)
-plot(1:N, ensamble_sy)
+plot(1:N, ensemble_sy)
+xlabel('time samples')
+ylabel('Ensemble standard deviation')
 
 %stationary
 figure()
 subplot(2, 1, 1)
-plot(1:N, ensamble_mv)
+plot(1:N, ensemble_mv)
+title('rp3')
+xlabel('time samples')
+ylabel('Ensemble mean')
 subplot(2, 1, 2)
-plot(1:N, ensamble_sv)
+plot(1:N, ensemble_sv)
+xlabel('time samples')
+ylabel('Ensemble standard deviation')
 
 %% Part 2
 %clear all;
@@ -69,8 +85,6 @@ for i = 1: M
     sample_mv(i, 1) = mean(v(i, :));
     sample_sv(i, 1) = std(v(i, :));
 end
-
-%% Part 3
 
 
 

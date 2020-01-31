@@ -1,7 +1,7 @@
 %% Creation of signal
 clc; clear all;
-n_samples = 100000;
-which_exercise = 2; %choose 1 for uniform distribution and 2 for gaussian distribution
+n_samples = 1000;
+which_exercise = 1; %choose 1 for uniform distribution and 2 for gaussian distribution
 x_axis = 1:n_samples;
 
 if (which_exercise == 1)
@@ -90,28 +90,10 @@ elseif (which_exercise == 2)
     for i = realizations
         plot([i, i], [1, std_realizations(i)], 'b-')
     end
-end 
-    
-% elseif (which_exercise == 2)
-%     subplot(2,1,1)
-%     scatter(realizations, sample_mean_realizations, 18,'ro', 'filled')
-%     title("realizations' sample means")
-%     ylabel("sample mean")
-%     xlabel("realization")
-%     ylim([-0.1 0.1])
-%     hline = refline([0, 0]);
-% 
-%     subplot(2,1,2)
-%     scatter(realizations, std_realizations, 18, 'ro', 'filled')
-%     title("realizations' sample standard deviation")
-%     ylabel("sample standard deviation")
-%     xlabel("realization")
-%     ylim([0.9 1.1])
-%     hline = refline([0, 1]);
-% end
+end
 
 %% Part 4
-n_bins = 150; %n_samples;
+n_bins = 10; %n_samples;
 title_text = sprintf("histogram pdf for %.0f samples and %.0f bins", n_samples, n_bins);
 title_histogram = sprintf("pdf estimate using the 'Normalized' histogram() function");
 figure()
