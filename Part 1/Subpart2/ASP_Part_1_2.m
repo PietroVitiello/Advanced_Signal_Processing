@@ -9,7 +9,7 @@ v = rp3(M, N);
 %Plot a realization
 %figure(), plot(1:N, x(1,:));
 
-%% Part 1
+%%% Part 1
 for i = 1: N
     ensemble_mx(i) = mean(x(:, i));
     ensemble_sx(i) = std(x(:, i));
@@ -28,6 +28,7 @@ std_estimatory = mean(ensemble_sy);
 mean_estimatorv = mean(ensemble_mv);
 std_estimatorv = mean(ensemble_sv);
 
+%% Plot Part 1
 %Not stationary
 figure()
 subplot(2, 1, 1)
