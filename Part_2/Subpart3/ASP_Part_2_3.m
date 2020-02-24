@@ -73,12 +73,17 @@ clear all;
 load sunspot.dat
 sunspot_zero = sunspot(:,2) - mean(sunspot(:,2));
 
+boundary = 1.96/sqrt(length(sunspot(:, 2)));
+
 p = 10;
-[a, e] = aryule(sunspot(:,2), p);
-[a_zero, e_zero] = aryule(sunspot_zero, p);
+[a, ~, k] = aryule(sunspot(:,2), p);
+[a_zero, ~, k_zero] = aryule(sunspot_zero, p);
+pac = -k;
+pac_zero = -k_zero;
 figure(), hold on;
-stem(1:p+1, a)
-stem(1:p+1, a_zero)
+stem(1:p, pac)
+stem(1:p, pac_zero)
+plot([1 p], [1 1]' * [boundary -boundary], 'k--');
 legend('With DC offset', 'Without DC offset')
 
 
