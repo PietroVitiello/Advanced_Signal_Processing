@@ -131,6 +131,9 @@ plot(p_axis, AIC)
 plot(p_axis, AIC_c)
 plot(p_axis, cumulative)
 legend('Minimum Description Length', 'Akaike Information Criterion', 'corrected AIC', 'Cumulative Error Squared')
+title("Different criteria for loss calculation with respect to the model's order")
+xlabel("model order p")
+ylabel("Loss function")
 
 figure(), hold on;
 p_axis = 1:p;
@@ -140,7 +143,9 @@ plot(p_axis, AIC_c)
 plot(p_axis, cumulative)
 legend('Minimum Description Length', 'Akaike Information Criterion', 'corrected AIC', 'Cumulative Error Squared')
 ylim([0.9 1])
-
+title("Different criteria for loss calculation with respect to the model's order")
+xlabel("model order p")
+ylabel("Loss function")
 
 
 
