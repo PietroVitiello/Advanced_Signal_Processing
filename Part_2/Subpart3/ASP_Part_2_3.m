@@ -71,7 +71,7 @@ close all;
 clear all;
 
 load sunspot.dat
-sunspot_zero = sunspot(:,2) - mean(sunspot(:,2));
+sunspot_zero = zscore(sunspot(:,2));
 
 boundary = 1.96/sqrt(length(sunspot(:, 2)));
 
@@ -83,8 +83,65 @@ pac_zero = -k_zero;
 figure(), hold on;
 stem(1:p, pac)
 stem(1:p, pac_zero)
-plot([1 p], [1 1]' * [boundary -boundary], 'k--');
-legend('With DC offset', 'Without DC offset')
+plot([1 p], [1 1]' * [boundary -boundary], 'k--')
+legend('Empirical data', 'Standardised data', 'Threshold');
+title("Partial correlation for sunspot time series");
+xlabel("Lag");
+ylabel("Correlation");
+
+%% Part 4
+close all;
+clear all;
+
+load sunspot.dat
+N = length(sunspot(:,2));
+p = 20;
+sunspot(:,2) = zscore(sunspot(:,2));
+sun = ones(N, p) .* sunspot(:,2);
+
+filtered_sun = zeros(N, p);
+for i = 1:p
+    a = aryule(sunspot(:,2), i);
+    filtered_sun(:, i) = filter(-a, 1, sunspot(:,2));
+end
+
+e = zeros(1, p);
+
+for i = 1:N
+    e(1,:) = (filtered_sun(i,:) - sun(i,:)).^2 + e(1,:);
+end
+
+MDL = log(e(1,:)) + (1:p).*log(N)./N;
+AIC = log(e(1,:)) + 2.*(1:p)./N;
+AIC_c = AIC + (2.*(1:p).*((1:p)+1))./(-(1:p)-1+N);
+cumulative = log(e(1,:));
+
+%normalizing
+MDL = MDL/MDL(1);
+AIC = AIC/AIC(1);
+AIC_c = AIC_c/AIC_c(1);
+cumulative = cumulative/cumulative(1);
+
+% test = (2.*(1:p).*((1:p)+1))./(-(1:p)-1+N);
+
+figure(), hold on;
+p_axis = 1:p;
+plot(p_axis, MDL)
+plot(p_axis, AIC)
+plot(p_axis, AIC_c)
+plot(p_axis, cumulative)
+legend('Minimum Description Length', 'Akaike Information Criterion', 'corrected AIC', 'Cumulative Error Squared')
+
+figure(), hold on;
+p_axis = 1:p;
+plot(p_axis, MDL)
+plot(p_axis, AIC)
+plot(p_axis, AIC_c)
+plot(p_axis, cumulative)
+legend('Minimum Description Length', 'Akaike Information Criterion', 'corrected AIC', 'Cumulative Error Squared')
+ylim([0.9 1])
+
+
 
 
 
