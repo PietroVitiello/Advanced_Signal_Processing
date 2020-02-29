@@ -6,6 +6,9 @@ prices = zscore(NASDAQ.Close);
 dates = NASDAQ.Date;
 N = length(prices);
 
+plot(prices)
+a1 = aryule(prices, 1);
+
 %% Part 1 pcf
 p = 10;
 pcf_axis = 1:p;
