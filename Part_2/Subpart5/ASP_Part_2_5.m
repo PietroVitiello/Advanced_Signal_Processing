@@ -1,44 +1,183 @@
 clc
 clear all
-close all
 
-load RAW.mat
+load RRI_2_5.mat
 
-%show data
+RRI_fs = RRI_fs1;
+trial = RRI_trial1;
+clear RRI_fs1 RRI_fs3 RRI_fs3
+
 figure()
-plot(data)
+plot(trial)
+figure()
+plot(RRI_trial2)
+figure()
+plot(RRI_trial3)
 
-%find breaking points
-[~, first_clap] = min(data(240000:260000));
-first_clap = 240000 + first_clap;
-[~, second_clap] = min(data(500000:510000));
-second_clap = 500000 + second_clap;
+%get heart rate
+h = 60 ./ trial;
 
-%divide the three trials
-ECG_trial1 = data(1:first_clap-1);
-ECG_trial2 = data(first_clap+1:second_clap-1);
-ECG_trial3 = data(second_clap+1:end);
+%% Part 1
+close all
+clear he
 
-%show the three trials
+alpha = [1 0.6];
+he = [];
+
+for n = [1 2]
+    a = 1;
+    for i = 0:10:(length(h)-8)
+        if (i == 1000)
+            he(a, n) = (1/8)* sum(alpha(n) .* h(i+1:end));
+        else
+            he(a, n) = (1/10)* sum(alpha(n) .* h(i+1:i+11));
+        end
+        a = a+1;
+    end
+end
+
+n_bins = 20;
+
 figure()
 subplot(3,1,1)
-plot(ECG_trial1)
+histogram(h, n_bins, 'Normalization', 'pdf')
+title('PDE of the original heart rate')
+xlabel('BPM')
+ylabel('Probability')
+xlim([0 150])
 subplot(3,1,2)
-plot(ECG_trial2)
+histogram(he(:,1), n_bins, 'Normalization', 'pdf')
+title('PDE of the averaged heart rate for \alpha = 1')
+xlabel('averaged BPM')
+ylabel('Probability')
+xlim([0 150])
 subplot(3,1,3)
-plot(ECG_trial3)
+histogram(he(:,2), n_bins, 'Normalization', 'pdf')
+title('PDE of the averaged heart rate for \alpha = 0.6')
+xlabel('averaged BPM')
+ylabel('Probability')
+xlim([0 150])
 
-%convert the three trials into RRI
-[RRI_trial1, RRI_fs1] = ECG_to_RRI(ECG_trial1, fs);
-[RRI_trial2, RRI_fs2] = ECG_to_RRI(ECG_trial1, fs);
-[RRI_trial3, RRI_fs3] = ECG_to_RRI(ECG_trial1, fs);
+%% Part 2
+close all
 
-fprintf('\n\nConversion done')
+trial1 = detrend(RRI_trial1);
+trial2 = detrend(RRI_trial2);
+trial3 = detrend(RRI_trial3);
 
-%Save the trials
-variables_to_save = {
-    'RRI_trial1', 'RRI_fs1', 'RRI_trial2', 'RRI_fs2', 'RRI_trial3', 'RRI_fs3', 'data', 'fs'
-};
-save('RRI_2_5.mat', variables_to_save{:})
+acf1 = xcorr(trial1, 'unbiased');
+acf2 = xcorr(trial2, 'unbiased');
+acf3 = xcorr(trial3, 'unbiased');
 
-fprintf('Saved variables')
+tau1 = -(length(trial1)-1) : length(trial1)-1;
+tau2 = -(length(trial2)-1) : length(trial2)-1;
+tau3 = -(length(trial3)-1) : length(trial3)-1;
+
+figure()
+subplot(3,1,1)
+plot(tau1, acf1)
+title('ACF of the first trial')
+xlabel('lag')
+ylabel('Amplitude (Au)')
+subplot(3,1,2)
+plot(tau2, acf2)
+title('ACF of the second trial')
+xlabel('lag')
+ylabel('Amplitude (Au)')
+subplot(3,1,3)
+plot(tau3, acf3)
+title('ACF of the third trial')
+xlabel('lag')
+ylabel('Amplitude (Au)')
+
+% find order of the models
+%% Partial Autocorrelation
+close all
+
+p = 10;
+
+[a1, ~, k1] = aryule(trial1, p);
+[a2, ~, k2] = aryule(trial2, p);
+[a3, ~, k3] = aryule(trial3, p);
+
+boundary1 = 1.96/sqrt(length(trial1));
+boundary2 = 1.96/sqrt(length(trial2));
+boundary3 = 1.96/sqrt(length(trial3));
+
+orders = 1:p;
+
+figure(1), hold on
+stem(orders, -k1)
+plot([1 p], [1 1]' * [boundary1 -boundary1], 'r--')
+title('ACF of the first trial')
+xlabel('lag')
+ylabel('Amplitude (Au)')
+
+figure(2), hold on
+stem(orders, -k2)
+plot([1 p], [1 1]' * [boundary2 -boundary2], 'r--')
+title('ACF of the second trial')
+xlabel('lag')
+ylabel('Amplitude (Au)')
+
+figure(3), hold on
+stem(orders, -k3)
+plot([1 p], [1 1]' * [boundary3 -boundary3], 'r--')
+title('ACF of the third trial')
+xlabel('lag')
+ylabel('Amplitude (Au)')
+
+%% Loss Functions
+p = 10;
+trials = {trial1' trial2' trial3'};
+titles = {'first trial', 'second trial', 'third trial'};
+
+for ii = 1:2
+    clear filtered_trial a tri MDL AIC AIC_c
+    N = length(trials{ii});
+    tri = ones(N, p) .* trials{ii};
+
+    filtered_trial = zeros(N, p);
+    for i = 1:p
+        a = aryule(trials{ii}, i);
+        filtered_trial(:, i) = filter(-a, 1, trials{ii});
+    end
+
+    e = zeros(1, p);
+
+    for i = 1:N
+        e(1,:) = (filtered_trial(i,:) - tri(i,:)).^2 + e(1,:);
+    end
+    
+    hghjghjghgjh = (1:p).*log(N)./N
+
+    MDL = log(e(1,:)) + (1:p).*log(N)./N;
+    AIC = log(e(1,:)) + 2.*(1:p)./N;
+    AIC_c = AIC + (2.*(1:p).*((1:p)+1))./(-(1:p)-1+N);
+    cumulative = log(e(1,:));
+
+    %normalizing
+%     MDL = MDL/MDL(1);
+%     AIC = AIC/AIC(1);
+%     AIC_c = AIC_c/AIC_c(1);
+%     cumulative = cumulative/cumulative(1);
+
+    figure(), hold on;
+    p_axis = 1:p;
+    plot(p_axis, MDL)
+    plot(p_axis, AIC)
+    plot(p_axis, AIC_c)
+    plot(p_axis, cumulative)
+    legend('Minimum Description Length', 'Akaike Information Criterion', 'corrected AIC') %, 'Cumulative Error Squared')
+    title(sprintf("Loss calculation for the %s", titles{ii}))
+    xlabel("model order (p)")
+    ylabel("Loss function")
+end
+
+
+
+
+
+
+
+

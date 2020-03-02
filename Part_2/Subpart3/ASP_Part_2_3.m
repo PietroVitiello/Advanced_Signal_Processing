@@ -38,7 +38,7 @@ index = 1;
 for i = lengths
    sunspot_zero = sunspot(:,2) - mean(sunspot(1:i,2));
    acf = xcorr(sunspot(1:i, 2), 'unbiased');
-   acf_zero = xcorr(sunspot_zero(1:i), 'coeff');
+   acf_zero = xcorr(sunspot_zero(1:i), 'unbiased');
    figure()
    stem (-(i-1):(i-1), acf)
    title(sprintf("ACF of sunspot data for %.0f samples", i))

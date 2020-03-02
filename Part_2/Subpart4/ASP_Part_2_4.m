@@ -24,7 +24,6 @@ xlabel("\tau")
 ylabel("PCF")
 
 %% Part 1 errors
-%% Part 4
 p = 10;
 norm_prices = zscore(prices);
 close_p = ones(N, p) .* norm_prices;
