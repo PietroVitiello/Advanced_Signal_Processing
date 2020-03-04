@@ -24,6 +24,9 @@ clear he
 alpha = [1 0.6];
 he = [];
 
+variance = var(h);
+disp(variance)
+
 for n = [1 2]
     a = 1;
     for i = 0:10:(length(h)-8)
@@ -35,6 +38,8 @@ for n = [1 2]
         a = a+1;
     end
 end
+variance = var(he);
+disp(variance)
 
 n_bins = 20;
 
@@ -59,7 +64,7 @@ ylabel('Probability')
 xlim([0 150])
 
 %% Part 2
-close all
+%close all
 
 trial1 = detrend(RRI_trial1);
 trial2 = detrend(RRI_trial2);
@@ -109,30 +114,32 @@ orders = 1:p;
 figure(1), hold on
 stem(orders, -k1)
 plot([1 p], [1 1]' * [boundary1 -boundary1], 'r--')
-title('ACF of the first trial')
+title('PAC function of the first trial')
 xlabel('lag')
 ylabel('Amplitude (Au)')
 
 figure(2), hold on
 stem(orders, -k2)
 plot([1 p], [1 1]' * [boundary2 -boundary2], 'r--')
-title('ACF of the second trial')
+title('PAC function of the second trial')
 xlabel('lag')
 ylabel('Amplitude (Au)')
 
 figure(3), hold on
 stem(orders, -k3)
 plot([1 p], [1 1]' * [boundary3 -boundary3], 'r--')
-title('ACF of the third trial')
+title('PAC function of the third trial')
 xlabel('lag')
 ylabel('Amplitude (Au)')
 
 %% Loss Functions
+clc
+
 p = 10;
 trials = {trial1' trial2' trial3'};
 titles = {'first trial', 'second trial', 'third trial'};
 
-for ii = 1:2
+for ii = 1:3
     clear filtered_trial a tri MDL AIC AIC_c
     N = length(trials{ii});
     tri = ones(N, p) .* trials{ii};
@@ -148,18 +155,22 @@ for ii = 1:2
     for i = 1:N
         e(1,:) = (filtered_trial(i,:) - tri(i,:)).^2 + e(1,:);
     end
-    
-    hghjghjghgjh = (1:p).*log(N)./N
 
     MDL = log(e(1,:)) + (1:p).*log(N)./N;
     AIC = log(e(1,:)) + 2.*(1:p)./N;
     AIC_c = AIC + (2.*(1:p).*((1:p)+1))./(-(1:p)-1+N);
-    cumulative = log(e(1,:));
+%     cumulative = log(e(1,:));
 
     %normalizing
-%     MDL = MDL/MDL(1);
-%     AIC = AIC/AIC(1);
-%     AIC_c = AIC_c/AIC_c(1);
+    MDL = MDL/MDL(1);
+    AIC = AIC/AIC(1);
+    AIC_c = AIC_c/AIC_c(1);
+    
+    if (ii == 2)
+        MDL = -(MDL-1)+1;
+        AIC = -(AIC-1)+1;
+        AIC_c = -(AIC_c-1)+1;
+    end
 %     cumulative = cumulative/cumulative(1);
 
     figure(), hold on;
@@ -167,7 +178,7 @@ for ii = 1:2
     plot(p_axis, MDL)
     plot(p_axis, AIC)
     plot(p_axis, AIC_c)
-    plot(p_axis, cumulative)
+%     plot(p_axis, cumulative)
     legend('Minimum Description Length', 'Akaike Information Criterion', 'corrected AIC') %, 'Cumulative Error Squared')
     title(sprintf("Loss calculation for the %s", titles{ii}))
     xlabel("model order (p)")

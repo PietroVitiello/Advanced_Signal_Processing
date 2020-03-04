@@ -146,12 +146,3 @@ ylim([0.9 1])
 title("Different criteria for loss calculation with respect to the model's order")
 xlabel("model order p")
 ylabel("Loss function")
-
-
-
-
-
-
-
-
-
