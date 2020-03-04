@@ -26,6 +26,7 @@ he = [];
 
 variance = var(h);
 disp(variance)
+disp(mean(h))
 
 for n = [1 2]
     a = 1;
@@ -33,13 +34,14 @@ for n = [1 2]
         if (i == 1000)
             he(a, n) = (1/8)* sum(alpha(n) .* h(i+1:end));
         else
-            he(a, n) = (1/10)* sum(alpha(n) .* h(i+1:i+11));
+            he(a, n) = (1/10)* sum(alpha(n) .* h(i+1:i+10));
         end
         a = a+1;
     end
 end
 variance = var(he);
 disp(variance)
+disp(mean(he))
 
 n_bins = 20;
 
