@@ -4,7 +4,13 @@ close all
 clc
 
 load sunspot.dat
-sun = filter(1, [1 0.9], sunspot(:,2));
+% sun = filter(1, [1 0.9], sunspot(:,2));
+sun = sunspot(:,2);
+
+normalize = 1;
+if (normalize == 1)
+    sun = detrend(sun);
+end
 
 % Ideal psd
 [h_ideal,w_ideal]=freqz(1,[1 0.9],length(sun)/2);
@@ -21,8 +27,8 @@ ry = xcorr(sun, 'unbiased');
 acf_axis = -length(sun)+1 : length(sun)-1;
 
 for orders = 1:10
-    [a_est(orders, 1:orders+1), var_est(orders)] = aryule(sun, orders);
-    [h(:, orders), w(:,orders)]=freqz(var_est(orders),[a_est(orders,1:orders+1)],N/2);
+    [a_est, var_est] = aryule(sun, orders);
+    [h(:, orders), w]=freqz(var_est^(1/2),a_est,N/2);
 end
 
 % ry = xcorr(sun, 'unbiased');
@@ -35,18 +41,42 @@ end
 
 % [h,w]=freqz(var_est,[1 a1_est],512);
 
-% Plot the various psd
-figure()
-plot(w_ideal/(2*pi),abs(h_ideal).^2)
-title('ideal')
+figure(), hold on;
 
-figure()
+plot(pgm_axis, estimated_per)
+plot(w/(2*pi),abs(h(:,1)).^2)
+plot(w/(2*pi),abs(h(:,2)).^2)
+plot(w/(2*pi),abs(h(:,10)).^2)
+
+xlim([0 0.5])
+title('PSD estimate of normalized sunspot data')
+ylabel('Amplitude (Au)')
+xlabel('normalized frequency')
+legend('Estimated periodogram', 'order 1 model based estimated PSD', 'order 2 model based estimated PSD', 'order 10 model based estimated PSD')
+
+%% Plot the individual psd
+% figure() %ideal
+% plot(w_ideal/(2*pi),abs(h_ideal).^2)
+% title('ideal')
+
+figure() %order 2
+which_order = 2;
+plot(w/(2*pi),abs(h(:,which_order)).^2)
+title('model')
+
+figure() %order 5
+which_order = 5;
+plot(w/(2*pi),abs(h(:,which_order)).^2)
+title('model')
+
+figure() %order 10
 which_order = 10;
-plot(w(:,which_order)/(2*pi),abs(h(:,which_order)).^2)
+plot(w/(2*pi),abs(h(:,which_order)).^2)
 title('model')
 
 figure()
 plot(pgm_axis, estimated_per)
+xlim([0 0.5])
 title('pgm')
 
 %% pgm of not filtered sunspot

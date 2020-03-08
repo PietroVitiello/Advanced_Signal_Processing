@@ -93,6 +93,16 @@ xlabel('normalized frequency')
 ylabel('Amplitude (Au)')
 legend('Estimated periodogram', 'Ideal PSD', 'Model based PSD')
 
+% [h_model,w_model]=freqz(var_est,[1 a1_est],512);
+% figure(), hold on
+% plot(pgm_axis, estimated_per) %generated with pgm
+% plot(w_model/(2*pi),abs(h_model).^2, 'r', 'LineWidth', 1.5)
+% xlim([0 0.5])
+% title('PSD estimate for AR(1) process')
+% xlabel('normalized frequency')
+% ylabel('Amplitude (Au)')
+% legend('Estimated periodogram', 'Model based PSD')
+
 figure()
 plot(freq, Py) %hard coded estimated PSD from model
 
