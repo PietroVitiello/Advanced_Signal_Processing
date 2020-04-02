@@ -10,9 +10,9 @@ load RRI_2_5.mat
 
 which = [1 2 3];
 
-nana = [RRI_trial1 RRI_trial2 RRI_trial3];
-nana = zscore(nana);
-plot(nana)
+full_signal = [RRI_trial1 RRI_trial2 RRI_trial3];
+full_signal = zscore(full_signal);
+plot(full_signal)
 
 trials = {RRI_trial1; RRI_trial2; RRI_trial3};
 frequencies = [RRI_fs1 RRI_fs2 RRI_fs3];
@@ -29,44 +29,21 @@ if (which(1) >= 1 && which(1) <=3)
         ylabel('Magnitude (Au)')
         xlim([0 0.2])
 
-%         figure()
-%         plot(0:1/n50:1-1/n50, psd50)
-%         title(sprintf('Averaged periodogram for 50s of Trial %.0f', i))
-%         xlabel('normalised frequency (2\pi rad/sample)')
-%         ylabel('Magnitude (Au)')
-%         xlim([0 0.2])
-% 
-%         figure()
-%         plot(0:1/n150:1-1/n150, psd150)
-%         title(sprintf('Averaged periodogram for 150s of Trial %.0f', i))
-%         xlabel('normalised frequency (2\pi rad/sample)')
-%         ylabel('Magnitude (Au)')
-%         xlim([0 0.2])
+        figure()
+        plot(0:1/n50:1-1/n50, psd50)
+        title(sprintf('Averaged periodogram for 50s of Trial %.0f', i))
+        xlabel('normalised frequency (2\pi rad/sample)')
+        ylabel('Magnitude (Au)')
+        xlim([0 0.2])
+
+        figure()
+        plot(0:1/n150:1-1/n150, psd150)
+        title(sprintf('Averaged periodogram for 150s of Trial %.0f', i))
+        xlabel('normalised frequency (2\pi rad/sample)')
+        ylabel('Magnitude (Au)')
+        xlim([0 0.2])
 
     end
 end
-
-% figure(1)
-% plot((0:length(standard_psd)/2 - 1)/length(standard_psd),standard_psd(1:end/2))
-% ylim([0 40]) % For all trials
-% % title(['PSD of RRI Trial ' num2str(trial_num)])
-% xlabel('Frequency')
-% ylabel('PSD')
-% 
-% figure(2)
-% plot((0:99)/200, psd50(1:100))
-% % title(['PSD of RRI Trial ' num2str(trial_num) ' (50 seconds average)'])
-% xlabel('Normalized Frequency')
-% ylabel('PSD')
-% grid on
-% grid minor
-% 
-% figure(3)
-% plot((0:299)/600, psd150(1:300))
-% % title(['PSD of RRI Trial ' num2str(trial_num) ' (150 seconds average)']);
-% xlabel('Normalized Frequency')
-% ylabel('PSD')
-% grid on
-% grid minor
 
 
