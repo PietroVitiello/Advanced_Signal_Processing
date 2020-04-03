@@ -2,12 +2,11 @@ clear all
 close all
 clc
 
-%% Set up
-
+%% Part 1
 % Simulation parameters
 N = 1000;
-N_w = 4;
-which_part = 2;
+order = 5;
+which_part = 1;
 if_normalize = 0;
 
 b = [1 2 3 2 1];
@@ -36,27 +35,20 @@ for i = 1:length(std_noise)
     SNR(i,1) = 10*log10(std(y)^2/std(noise)^2);
 end
 
-%% Weight optimisation
-%finding R_xx
-R_xx = zeros(N_w+1, N_w+1);
-acf = xcorr(x, 'unbiased');
-
-for i = 1:N_w+1
-    R_xx(i, :) = acf(1, N+i-1 :-1: N+i-N_w-1);
-end
-
-for i = 1:length(std_noise)
-    % finding p_zx
-    p_zx = xcorr(z(i,:), x, 'unbiased');
-    p_zx = p_zx(N : N+N_w)';
+step_size = [0.002 0.02 0.12 0.25 0.4 0.5];
+for gain = step_size %linspace(0.002, 0.5, 6)
+    [y_estimate, error_vector, weights{find(step_size == gain)}] = lms(x', z, gain, order);
     
-    %finding the weights for each different variance
-    w_optimal(:, i) = inv(R_xx) * p_zx
-    error(i,1) = mean(abs(w_optimal(1:length(b), i) - b'))
+    figure(), hold on
+    plot(1:length(y_estimate), weights{find(step_size == gain)})
+    scatter([1000 1000 1000], [1 2 3], 'b', 'filled')
+    title(['Evolution of the weights for \mu = ' num2str(gain)])
+    xlabel('Time (n)')
+    ylabel('Estimated Coefficients')
+    legend('w0', 'w1', 'w2', 'w3', 'w4')
 end
-
-
-
-
-
-
+    
+    
+    
+    
+    
