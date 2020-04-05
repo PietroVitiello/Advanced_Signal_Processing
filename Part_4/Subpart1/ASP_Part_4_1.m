@@ -26,7 +26,7 @@ elseif which_part == 2
     noise_variance = linspace(0.1, 10, 6);
     std_noise = noise_variance.^(1/2);
 else
-    disp('Part can only be either 2 or 3') %should throw error ater because there is no noise_variance
+    disp('Part can only be either 2 or 3') %should also throw error later because there is no noise_variance
 end
 
 for i = 1:length(std_noise)
@@ -51,8 +51,8 @@ for i = 1:length(std_noise)
     p_zx = p_zx(N : N+N_w)';
     
     %finding the weights for each different variance
-    w_optimal(:, i) = inv(R_xx) * p_zx
-    error(i,1) = mean(abs(w_optimal(1:length(b), i) - b'))
+    w_optimal(:, i) = inv(R_xx) * p_zx;
+    error(i,1) = mean(abs(w_optimal(1:length(b), i) - b'));
 end
 
 
