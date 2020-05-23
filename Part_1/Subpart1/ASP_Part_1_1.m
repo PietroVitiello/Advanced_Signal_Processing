@@ -1,5 +1,5 @@
 %% Creation of signal
-clc; clear all;
+clc, clear all, close all;
 n_samples = 1000;
 which_exercise = 1; %choose 1 for uniform distribution and 2 for gaussian distribution
 x_axis = 1:n_samples;
@@ -45,15 +45,16 @@ for realization = realizations
     end
 end
 
-m_estimatorBias = 0 - mean(sample_mean_realizations);
-s_estimatorBias = 1 - mean(std_realizations);
+m_estimatorBias = 0.5 - mean(sample_mean_realizations);
+s_estimatorBias = 1/sqrt(12) - mean(std_realizations);
+
 %% Part 3 plotting
 figure()
 
 subplot(2,1,1)
 hold on
 scatter(realizations, sample_mean_realizations, 18,'bo', 'filled')
-title("realizations' sample means")
+title("realizations' sample mean")
 ylabel("sample mean")
 xlabel("realizations")
 %ylim([0.45 0.55])
@@ -93,7 +94,7 @@ elseif (which_exercise == 2)
 end
 
 %% Part 4
-n_bins = 10; %n_samples;
+n_bins = 3; %n_samples;
 title_text = sprintf("histogram pdf for %.0f samples and %.0f bins", n_samples, n_bins);
 title_histogram = sprintf("pdf estimate using the 'Normalized' histogram() function");
 figure()

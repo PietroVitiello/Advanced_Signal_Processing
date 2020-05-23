@@ -29,12 +29,13 @@ SNR = 10*log10(std(y)^2/std(noise)^2);
 %% Finding optimal parameters
 do_figures = 0;
 optimal_sc = 15;
+initial_gain = 0.4;
 
 for repetitions = [1 2]
     %%% Finding best threshold factor
     thresholds = linspace(1, 30, 40);
     for param = thresholds
-        [~, error_vector, ~] = lms_gear(x', z, 0.4, optimal_sc, param, order);
+        [~, error_vector, ~] = lms_gear(x', z, initial_gain, optimal_sc, param, order);
 
         avg_sqr_error(find(thresholds == param)) = mean(error_vector.^2);
     end
@@ -51,7 +52,7 @@ for repetitions = [1 2]
     optimal_th = thresholds(find(avg_sqr_error == min(avg_sqr_error)));
     scalings = linspace(1, 40, 40);
     for param = scalings
-        [~, error_vector, ~] = lms_gear(x', z, 0.4, param, optimal_th, order);
+        [~, error_vector, ~] = lms_gear(x', z, initial_gain, param, optimal_th, order);
 
         avg_sqr_error(find(scalings == param)) = mean(error_vector.^2);
     end
@@ -90,7 +91,7 @@ legend('w0', 'w1', 'w2', 'w3', 'w4', 'actual coefficients')
 %% Compare to standard LMS
 addpath(genpath([fileparts(pwd), '\Subpart2']));
 
-step_size = 0.4;
+step_size = 0.08;
 [y_estimate, error_vector, weights] = lms(x', z, step_size, order);
 
 figure(), hold on

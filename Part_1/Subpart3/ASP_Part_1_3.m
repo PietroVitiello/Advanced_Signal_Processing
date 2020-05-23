@@ -43,7 +43,7 @@ time_axis = 1:100000;
 figure()
 plot(time_axis, non_st);
 xlabel('Time samples (n)')
-ylabel('Amplitude(Au)')
+ylabel('Amplitude (Au)')
 
 figure(), hold on
 xlabel('values')

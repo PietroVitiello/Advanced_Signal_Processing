@@ -28,7 +28,7 @@ xlabel('relative distance between samples ({\tau})')
 axis([600 inf -inf inf])
 
 %% Part 4
-filtered_wnoise = filter(2*ones(9,1), [1], wnoise);
+filtered_wnoise = filter(1*ones(9,1), [1], wnoise);
 
 %% Part 4 plot filtered noise
 figure()

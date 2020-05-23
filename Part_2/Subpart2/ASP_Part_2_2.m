@@ -1,5 +1,5 @@
 %% Noise set up
-clear all
+clear all, close all
 x = randn(1, 1000);
 y = filter(2*ones(9,1), [1], x);
 
@@ -7,7 +7,7 @@ y = filter(2*ones(9,1), [1], x);
 
 %% Part 1 full ACF
 figure()
-plot(lags, acf);
+plot(lags, ccf);
 title('Cross-correlation of uncorrelated process and its filtered version')
 ylabel('Amplitude (Au)')
 xlabel('relative distance between samples ({\tau})')
@@ -16,7 +16,7 @@ axis([-999 999 -inf inf])
 
 %% Part 1 stem between -20 and 20
 figure()
-stem(lags, acf);
+stem(lags, ccf);
 title('Zoomed Cross-correlation of uncorrelated process and its filtered version')
 ylabel('Amplitude (Au)')
 xlabel('relative distance between samples ({\tau})')
